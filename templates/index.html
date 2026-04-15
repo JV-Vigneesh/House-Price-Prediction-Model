@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>House Price Predictor</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 🔥 Glassmorphism Card */
+        .container {
+            width: 650px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 18px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            color: #fff;
+        }
+
+        /* Title */
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Sections */
+        .section {
+            margin-top: 18px;
+        }
+
+        .section h3 {
+            margin-bottom: 8px;
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* Inputs */
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+            transition: 0.25s;
+        }
+
+        /* Placeholder color */
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Focus effect */
+        input:focus,
+        select:focus {
+            border-color: #a78bfa;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
+        }
+
+        /* Dropdown text fix */
+        select {
+            color: #fff;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #8b5cf6, #6c63ff);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Glow hover */
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.5);
+        }
+
+        /* Toggle */
+        .toggle {
+            text-align: center;
+            color: #c4b5fd;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        /* Result Box */
+        .result-box {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        /* Price */
+        .result-box h2 {
+            margin: 5px 0;
+            font-size: 26px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Short price */
+        .result-box h3 {
+            margin: 5px 0;
+            color: #c4b5fd;
+        }
+
+        /* Spinner */
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top: 5px solid #8b5cf6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 15px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        option {
+            color: black;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #advancedSection {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🏠 House Price Predictor</h1>
+
+        <form action="/predict" method="post" onsubmit="showLoading()">
+
+            <div class="section">
+                <h3>Basic Details</h3>
+
+                <select name="City">
+                    {% for city in cities %}
+                    <option value="{{city}}" {% if form_data and form_data.get("City")==city %}selected{% endif %}>
+                        {{city}}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="Locality_Tier">
+                    {% for t in ["Budget","Mid","Premium"] %}
+                    <option value="{{t}}" {% if form_data and form_data.get("Locality_Tier")==t %}selected{% endif %}>
+                        {{t}}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="number" name="BHK" placeholder="BHK" min="1" max="10"
+                    value="{{form_data.get('BHK') if form_data else ''}}" required>
+
+                <input type="number" name="Bathrooms" placeholder="Bathrooms" min="1" max="10"
+                    value="{{form_data.get('Bathrooms') if form_data else ''}}" required>
+
+                <input type="number" name="Super_Area_sqft" placeholder="Super Area (sqft)" min="200" max="10000"
+                    value="{{form_data.get('Super_Area_sqft') if form_data else ''}}" required>
+
+                <input type="number" name="Property_Age_years" placeholder="Property Age" min="0" max="100"
+                    value="{{form_data.get('Property_Age_years') if form_data else ''}}" required>
+
+            </div>
+
+            <div class="toggle" onclick="toggleAdvanced()">⚙️ Advanced Options</div>
+
+            <div id="advancedSection" class="advanced section">
+
+                <input type="number" name="Carpet_Area_sqft" placeholder="Carpet Area"
+                    value="{{form_data.get('Carpet_Area_sqft') if form_data else ''}}">
+                <input type="number" name="Floor_No" placeholder="Floor No"
+                    value="{{form_data.get('Floor_No') if form_data else ''}}">
+                <input type="number" name="Total_Floors" placeholder="Total Floors"
+                    value="{{form_data.get('Total_Floors') if form_data else ''}}">
+
+            </div>
+
+            <br>
+            <button type="submit">Predict Price</button>
+
+        </form>
+
+        <div id="loading" style="display:none;">
+            <div class="spinner"></div>
+        </div>
+
+        {% if prediction_text %}
+        <div class="result-box">
+
+            <h2 id="priceDisplay"></h2>
+
+            <h3>{{ short_price }}</h3>
+
+            <p style="margin-top:10px;">
+                <strong>Recommended Range:</strong><br>
+                ₹ {{ low }} – ₹ {{ high }}
+            </p>
+
+            <p style="margin-top:5px;">
+                Confidence: {{ confidence }}%
+            </p>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+
+<script>
+    function toggleAdvanced() {
+        var x = document.getElementById("advancedSection");
+        x.style.display = (x.style.display === "none") ? "block" : "none";
+    }
+
+    function showLoading() {
+        document.getElementById("loading").style.display = "block";
+    }
+
+    function formatIndian(num) {
+        num = num.toString();
+        let last3 = num.slice(-3);
+        let rest = num.slice(0, -3);
+        if (rest != '') {
+            rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+            return "₹ " + rest + "," + last3;
+        }
+        return "₹ " + last3;
+    }
+
+    function animatePrice(finalValue) {
+        let current = 0;
+        let increment = finalValue / 50;
+
+        let el = document.getElementById("priceDisplay");
+
+        let timer = setInterval(() => {
+            current += increment;
+
+            if (current >= finalValue) {
+                current = finalValue;
+                clearInterval(timer);
+            }
+
+            el.innerHTML = formatIndian(Math.floor(current));
+        }, 20);
+    }
+    window.onload = function () {
+
+        // Keep advanced open
+        {% if used_advanced %}
+        document.getElementById("advancedSection").style.display = "block";
+        {% endif %}
+
+        // Animate price
+        let value = {{ pred_value if pred_value else 0 }};
+        if (value > 0) {
+            animatePrice(value);
+        }
+    };
+</script>
+
+</html>

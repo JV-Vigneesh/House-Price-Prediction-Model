@@ -1,0 +1,9 @@
+config,RMSE,MAE,R2
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': None}",1231179.4553485767,885615.1521289062,0.9658376184348231
+"{'optimizer_name': 'adam', 'init_type': 'xavier'}",1983681.5475722034,1391681.0403645833,0.9113151723395698
+"{'optimizer_name': 'adam', 'init_type': 'he'}",2078973.5965826125,1521640.584967448,0.9025900395770649
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': 'l2'}",2082524.632238898,1590710.973046875,0.9022569890182558
+"{'optimizer_name': 'adam', 'init_type': 'he', 'dropout_rate': 0.5}",2462778.11814914,1820038.1026236978,0.8633039416308277
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': 'l1'}",2626379.4227985432,2004087.846796875,0.8445393949410519
+"{'optimizer_name': 'rmsprop', 'init_type': 'he', 'regularizer_type': None}",2700750.2950192005,1862067.4357185871,0.8356104207733986
+"{'optimizer_name': 'sgd', 'init_type': 'he', 'regularizer_type': None}",5675674.656681575,4251315.438483073,0.27399367414630194

@@ -1,0 +1,9 @@
+config,CV_RMSE
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': 'l1', 'use_bn': True, 'dropout_rate': 0.0}",1317618.9030599364
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': None, 'use_bn': True, 'dropout_rate': 0.0}",1335481.5314651565
+"{'optimizer_name': 'adam', 'init_type': 'xavier', 'regularizer_type': None, 'use_bn': True, 'dropout_rate': 0.0}",1351085.0842738256
+"{'optimizer_name': 'rmsprop', 'init_type': 'he', 'regularizer_type': None, 'use_bn': True, 'dropout_rate': 0.0}",1359173.3150954323
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': 'l2', 'use_bn': True, 'dropout_rate': 0.0}",1365571.1210830882
+"{'optimizer_name': 'sgd', 'init_type': 'he', 'regularizer_type': None, 'use_bn': True, 'dropout_rate': 0.0}",1407051.6762870783
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': None, 'use_bn': False, 'dropout_rate': 0.0}",1472747.6884977208
+"{'optimizer_name': 'adam', 'init_type': 'he', 'regularizer_type': None, 'use_bn': True, 'dropout_rate': 0.5}",2518657.573379389

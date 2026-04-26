@@ -169,6 +169,18 @@
                 transform: rotate(360deg);
             }
         }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.85);
+        }
     </style>
 
 </head>
@@ -184,43 +196,100 @@
             <div class="section">
                 <h3>Basic Details</h3>
 
-                <select name="City" required>
-                    <option disabled selected>Select City</option>
-                    {% for city in cities %}
-                    <option value="{{city}}" {% if form_data and form_data.get("City")==city %}selected{% endif %}>
-                        {{city}}
-                    </option>
-                    {% endfor %}
-                </select>
+                <!-- City -->
+                <div class="form-group">
+                    <label>City</label>
+                    <select name="City" required>
+                        <option disabled selected>Select City</option>
+                        {% for city in cities %}
+                        <option value="{{city}}" {% if form_data and form_data.get("City")==city %}selected{% endif %}>
+                            {{city}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <select name="Locality_Tier" required>
-                    <option disabled selected>Select Locality Tier</option>
-                    {% for t in ["Budget","Mid","Premium"] %}
-                    <option value="{{t}}" {% if form_data and form_data.get("Locality_Tier")==t %}selected{% endif %}>
-                        {{t}}
-                    </option>
-                    {% endfor %}
-                </select>
+                <!-- Locality -->
+                <div class="form-group">
+                    <label>Locality Tier</label>
+                    <select name="Locality_Tier" required>
+                        <option disabled selected>Select Locality Tier</option>
+                        {% for t in ["Budget","Mid","Premium"] %}
+                        <option value="{{t}}" {% if form_data and form_data.get("Locality_Tier")==t %}selected{% endif %}>
+                            {{t}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <input type="number" name="BHK" placeholder="BHK" min="1" max="10" required>
-                <input type="number" name="Bathrooms" placeholder="Bathrooms" min="1" max="10" required>
+                <!-- BHK -->
+                <div class="form-group">
+                    <label>BHK</label>
+                    <input type="number" name="BHK" placeholder="BHK" min="1" max="10" required
+                    value="{{ form_data.get('BHK') if form_data else '' }}">
+                </div>
 
-                <input type="number" name="Super_Area_sqft" placeholder="Super Area (sqft)" min="200" required>
-                <input type="number" name="Property_Age_years" placeholder="Property Age" min="0" required>
+                <!-- Bathrooms -->
+                <div class="form-group">
+                    <label>Bathrooms</label>
+                    <input type="number" name="Bathrooms" placeholder="Bathrooms"
+                    value="{{ form_data.get('Bathrooms') if form_data else '' }}">
+                </div>
+
+                <!-- Super Area -->
+                <div class="form-group">
+                    <label>Super Area (sqft)</label>
+                    <input type="number" name="Super_Area_sqft" placeholder="Super Area (sqft)"
+                    value="{{ form_data.get('Super_Area_sqft') if form_data else '' }}">
+                </div>
+
+                <!-- Property Age -->
+                <div class="form-group">
+                    <label>Property Age (years)</label>
+                    <input type="number" name="Property_Age_years" placeholder="Property Age (years)"
+                    value="{{ form_data.get('Property_Age_years') if form_data else '' }}">
+                </div>
             </div>
 
             <div class="toggle" onclick="toggleAdvanced(event)">⚙️ Advanced Options</div>
 
-            <div id="advancedSection" class="section">
+            <div id="advancedSection" class="section" style="display: {{ 'grid' if used_advanced else 'none' }}">
 
-                <input type="number" name="Carpet_Area_sqft" placeholder="Carpet Area">
-                <input type="number" name="Floor_No" placeholder="Floor No">
+                <div class="form-group">
+                    <label>Carpet Area (sqft)</label>
+                    <input type="number" name="Carpet_Area_sqft" placeholder="Carpet Area (sqft)"
+                    value="{{ form_data.get('Carpet_Area_sqft') if form_data else '' }}">
+                </div>
 
-                <input type="number" name="Total_Floors" placeholder="Total Floors">
-                <input type="number" name="Distance_to_Metro_km" placeholder="Distance to Metro">
+                <div class="form-group">
+                    <label>Floor No.</label>
+                    <input type="number" name="Floor_No" placeholder="Floor No."
+                    value="{{ form_data.get('Floor_No') if form_data else '' }}">
+                </div>
 
-                <input type="number" name="Nearby_School_km" placeholder="Nearby School">
-                <input type="number" name="Nearby_Hospital_km" placeholder="Nearby Hospital">
+                <div class="form-group">
+                    <label>Total Floors</label>
+                    <input type="number" name="Total_Floors" placeholder="Total Floors"
+                    value="{{ form_data.get('Total_Floors') if form_data else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Distance to Metro (km)</label>
+                    <input type="number" name="Distance_to_Metro_km" placeholder="Distance to Metro (km)"
+                    value="{{ form_data.get('Distance_to_Metro_km') if form_data else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Distance to Nearest School (km)</label>
+                    <input type="number" name="Nearby_School_km" placeholder="Distance to Nearest School (km)"
+                    value="{{ form_data.get('Nearby_School_km') if form_data else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Distance to Nearest Hospital (km)</label>
+                    <input type="number" name="Nearby_Hospital_km" placeholder="Distance to Nearest Hospital (km)"
+                    value="{{ form_data.get('Nearby_Hospital_km') if form_data else '' }}">
+                </div>
 
             </div>
 
@@ -243,6 +312,12 @@
             </p>
 
             <p>Confidence: {{ confidence }}%</p>
+            <p style="font-size: 14px; opacity: 0.8;">
+               ℹ️ {{ confidence_note }}
+            </p>
+            <p style="font-size: 14px; opacity: 0.7;">
+                📉 Model Uncertainty (RMSE): {{ rmse_value }}
+            </p>
         </div>
         {% endif %}
 

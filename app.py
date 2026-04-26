@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
 import joblib
+import json
 from flask import Flask, render_template, request
+from sklearn import metrics
 from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
@@ -109,9 +111,16 @@ def predict():
         formatted_short = format_short(prediction)
 
         # 🔥 Range
-        rmse = 1237717
-        low = max(0, prediction - rmse)
-        high = prediction + rmse
+        with open("model/metrics.json") as f:
+            metrics = json.load(f)
+
+        rmse = metrics["rmse"]
+
+        # scaling factor
+        k = 1.5
+
+        low = max(0, prediction - k * rmse)
+        high = prediction + k * rmse
 
         low_str = format_indian(low)
         high_str = format_indian(high)
@@ -126,6 +135,8 @@ def predict():
             data.get("Distance_to_Metro_km"),
             data.get("Crime_Rate_Index")
         ])
+        
+        confidence_note = f"Range uses ± {k} × RMSE for realistic uncertainty"
 
         return render_template(
             "index.html",
@@ -137,7 +148,9 @@ def predict():
             pred_value=int(prediction),
             cities=cities,
             form_data=data,
-            used_advanced=used_advanced
+            used_advanced=used_advanced,
+            confidence_note=confidence_note,
+            rmse_value = format_short(rmse)
         )
 
     except Exception as e:
